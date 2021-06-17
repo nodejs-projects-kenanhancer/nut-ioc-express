@@ -1,0 +1,27 @@
+{
+  "name": "nut-ioc-express",
+  "version": "1.0.0",
+  "description": "Express Framework is used to host endpoint in OpenAPI  or Swagger document.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nodejs-projects-kenanhancer/nut-ioc-express.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nodejs-projects-kenanhancer/nut-ioc-express/issues"
+  },
+  "homepage": "https://github.com/nodejs-projects-kenanhancer/nut-ioc-express#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "express-openapi-validator": "^4.12.12",
+    "swagger-parser": "^10.0.2",
+    "swagger-ui-express": "^4.1.6"
+  }
+}

@@ -1,0 +1,1 @@
+module.exports.use = ({ nutIocContainer }) => nutIocContainer.use({ dependencyPath: `${__dirname}/httpServer` });
