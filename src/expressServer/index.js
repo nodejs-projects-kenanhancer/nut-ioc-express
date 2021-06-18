@@ -2,7 +2,20 @@ const express = require('express');
 const cors = require('cors');
 
 module.exports.ServiceName = "";
-module.exports.Service = ({ errorMiddleware, appEnv, UnauthorizedError, appLogger, swaggerDefinitions }) => {
+module.exports.Service = async ({ errorMiddleware, appEnv, UnauthorizedError, appLogger, swaggerDefinitions, swaggerDocumentValidator }) => {
+
+    const swaggers = { ...swaggerDefinitions };
+
+    Object.entries(appEnv).filter(([key,]) => key.includes('ds.')).forEach(([key, value]) => {
+        const [group, serviceName, fieldName] = key.split('.');
+
+        swaggers[serviceName][fieldName] = value;
+    });
+
+    await swaggerDocumentValidator.validate({ swaggerDefinitions: swaggers });
+
+
+
 
     const app = express();
 
@@ -25,10 +38,6 @@ module.exports.Service = ({ errorMiddleware, appEnv, UnauthorizedError, appLogge
         })
     );
 
-    app.get('/', (req, res) => {
-        res.send('Hello World! bla bal aldskfadsfjs')
-    })
-
     // const httpServer = http.createServer(app);
     // httpServer.listen(process.env.HTTPPORT || 8080, function () {
     //     const PORT = httpServer.address().PORT;
@@ -46,7 +55,7 @@ module.exports.Service = ({ errorMiddleware, appEnv, UnauthorizedError, appLogge
     // });
     return {
         configProvider: { app, express, PORT },
-        start: async () => {
+        start: async (args) => {
 
             app.use(async (error, req, res, next) => await errorMiddleware(error, req, res, next));
 
