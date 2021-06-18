@@ -1,5 +1,5 @@
 module.exports.ServiceName = ""; 
-module.exports.Service = ({ utility: { stringHelpers } }) =>
+module.exports.Service = ({ utility: { stringHelpers: { capitalize } } }) =>
     async (req, res, next) => {
 
         const { headers } = req;
@@ -7,7 +7,7 @@ module.exports.Service = ({ utility: { stringHelpers } }) =>
         const newHeaders = {};
 
         for (const header in headers) {
-            const capitalizedHeader = stringHelpers.capitalize(header);
+            const capitalizedHeader = await capitalize(header);
             newHeaders[capitalizedHeader] = headers[header];
         }
 

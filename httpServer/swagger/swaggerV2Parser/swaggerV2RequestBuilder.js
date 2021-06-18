@@ -1,5 +1,5 @@
 module.exports.ServiceName = "";
-module.exports.Service = ({ swaggerV2RequestHeaderValidator, utility: { stringHelpers }, clientErrors: { SwaggerError } }) =>
+module.exports.Service = ({ swaggerV2RequestHeaderValidator, utility: { stringHelpers: { capitalize } }, clientErrors: { SwaggerError } }) =>
     ({ swaggerDefinitions, url, baseUrl, headers, method, body }) => {
 
         const methodLowerCase = method.toLowerCase();
@@ -54,7 +54,7 @@ module.exports.Service = ({ swaggerV2RequestHeaderValidator, utility: { stringHe
 
         const args = {};
 
-        swagger_pathMethod.parameters && swagger_pathMethod.parameters.forEach(swagger_pathMethodParameter => {
+        swagger_pathMethod.parameters && swagger_pathMethod.parameters.forEach(async (swagger_pathMethodParameter) => {
 
             let pathMethodParameterName;
             let methodParameterObj;
@@ -77,7 +77,7 @@ module.exports.Service = ({ swaggerV2RequestHeaderValidator, utility: { stringHe
 
             const paramValue = swaggerV2RequestHeaderValidator.validate({ headers, queryParams, pathParams, body, swagger_pathMethodParameter: methodParameterObj });
 
-            args[stringHelpers.capitalize(pathMethodParameterName)] = paramValue;
+            args[await capitalize(pathMethodParameterName)] = paramValue;
         });
 
         return args;

@@ -1,6 +1,6 @@
 module.exports.ServiceName = "";
-module.exports.Service = ({ swaggerV3RequestHeaderValidator, utility: { stringHelpers }, clientErrors: { SwaggerError } }) =>
-    ({ swaggerDefinitions, url, baseUrl, headers, method, body }) => {
+module.exports.Service = ({ swaggerV3RequestHeaderValidator, utility: { stringHelpers: { capitalize } }, clientErrors: { SwaggerError } }) =>
+    async ({ swaggerDefinitions, url, baseUrl, headers, method, body }) => {
 
         const methodLowerCase = method.toLowerCase();
 
@@ -54,32 +54,34 @@ module.exports.Service = ({ swaggerV3RequestHeaderValidator, utility: { stringHe
 
         const args = { body };
 
-        swagger_pathMethod.parameters && swagger_pathMethod.parameters.forEach(swagger_pathMethodParameter => {
+        if (swagger_pathMethod.parameters) {
+            for (const swagger_pathMethodParameter of swagger_pathMethod.parameters) {
+                let pathMethodParameterName;
+                let methodParameterObj;
 
-            let pathMethodParameterName;
-            let methodParameterObj;
+                if (swagger_pathMethodParameter.hasOwnProperty('$ref')) {
+                    pathMethodParameterName = Object.values(swagger_pathMethodParameter)[0];
 
-            if (swagger_pathMethodParameter.hasOwnProperty('$ref')) {
-                pathMethodParameterName = Object.values(swagger_pathMethodParameter)[0];
+                    const splitParam = pathMethodParameterName.split('/');
 
-                const splitParam = pathMethodParameterName.split('/');
+                    const methodParameterName = splitParam && splitParam[splitParam.length - 1];
 
-                const methodParameterName = splitParam && splitParam[splitParam.length - 1];
+                    pathMethodParameterName = methodParameterName;
 
-                pathMethodParameterName = methodParameterName;
+                    methodParameterObj = swagger_parameters[pathMethodParameterName] || requestBodies;
+                } else {
+                    pathMethodParameterName = swagger_pathMethodParameter.name;
 
-                methodParameterObj = swagger_parameters[pathMethodParameterName] || requestBodies;
-            } else {
-                pathMethodParameterName = swagger_pathMethodParameter.name;
+                    methodParameterObj = swagger_pathMethodParameter;
+                }
 
-                methodParameterObj = swagger_pathMethodParameter;
+                const paramValue = await swaggerV3RequestHeaderValidator.validate({ headers, queryParams, pathParams, body, swagger_pathMethodParameter: methodParameterObj });
+
+                pathMethodParameterName = await capitalize(pathMethodParameterName);
+
+                args[pathMethodParameterName] = paramValue;
             }
-
-            const paramValue = swaggerV3RequestHeaderValidator.validate({ headers, queryParams, pathParams, body, swagger_pathMethodParameter: methodParameterObj });
-
-            args[stringHelpers.capitalize(pathMethodParameterName)] = paramValue;
-        });
-
+        }
 
         return args;
     };
