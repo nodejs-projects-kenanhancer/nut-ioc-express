@@ -18,7 +18,7 @@ module.exports.Service = ({ swaggerV3RequestHeaderValidator, utility: { stringHe
             throw new SwaggerError({ message: `Bad request:: Swagger ${baseUrl} base url not found in Swagger definiton.` });
         }
 
-        const { paths: swagger_paths, components: { parameters: swagger_parameters, requestBodies } } = swaggerDefinition;
+        const { paths: swagger_paths, components: { parameters: swagger_parameters, requestBodies } = {} } = swaggerDefinition;
 
         const [swagger_path, swagger_pathMethods] = Object.entries(swagger_paths).find(([key]) => key === pathUrl || key.split('/').slice(1).every((item, index) => item.includes('{') || splittedPathUrl[index] === item)) || [];
 
