@@ -1,18 +1,18 @@
 const nutIoc = require('nut-ioc');
 
-const nutIocContainer_ = nutIoc();
+const nutIocContainerExpress = nutIoc();
 
 module.exports = (nutIocContainer) =>
     async () => {
 
-        nutIocContainer_.use({
+        nutIocContainerExpress.use({
             dependencyPath: `${__dirname}/src`,
             ignoredDependencies: ['*.DS_Store']
         });
 
-        nutIocContainer_.useNutIocContainer(nutIocContainer);
+        nutIocContainerExpress.useNutIocContainer(nutIocContainer);
 
-        const { expressServer } = await nutIocContainer_.build();
+        const { expressServer } = await nutIocContainerExpress.build();
 
         nutIocContainer.useDependency({
             ServiceName: "expressServer",
