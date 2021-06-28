@@ -1,6 +1,6 @@
 {
   "name": "nut-ioc-express",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Express Framework is used to host endpoint in OpenAPI  or Swagger document.",
   "main": "index.js",
   "scripts": {
