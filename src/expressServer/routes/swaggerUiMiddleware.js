@@ -7,7 +7,7 @@ module.exports.Service = async ({ expressServer, appEnv, swaggerDefinitions }) =
 
     appEnv.ApiDocs = [];
 
-    const { PORT } = appEnv;
+    const { PORT, OPEN_API_UI_BASE_PATH = '/api-docs' } = appEnv;
 
     const options = {
         explorer: true
@@ -31,10 +31,10 @@ module.exports.Service = async ({ expressServer, appEnv, swaggerDefinitions }) =
             res.send(html);
         });
 
-        appEnv.ApiDocs.push(`http://${host}/api-docs${basePath}`);
+        appEnv.ApiDocs.push(`http://${host}${OPEN_API_UI_BASE_PATH}${basePath}`);
 
     }
 
-    app.use("/api-docs", router);
+    app.use(OPEN_API_UI_BASE_PATH, router);
 
-};
+}
