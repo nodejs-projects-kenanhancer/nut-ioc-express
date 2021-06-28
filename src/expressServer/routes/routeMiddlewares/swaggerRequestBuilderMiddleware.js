@@ -1,5 +1,5 @@
 module.exports.ServiceName = "";
-module.exports.Service = async ({ swaggerDefinitions, dependencyProvider, appEnv: { REQUEST_BUILDER } }) => {
+module.exports.Service = async ({ swaggerDefinitions, dependencyProvider, appEnv: { REQUEST_BUILDER = 'swaggerV3RequestBuilder' } }) => {
 
     const swaggerRequestHeaderPrettifier = await dependencyProvider(REQUEST_BUILDER);
 
