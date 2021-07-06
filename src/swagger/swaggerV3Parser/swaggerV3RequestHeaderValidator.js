@@ -1,6 +1,6 @@
 module.exports.ServiceName = "";
 module.exports.Service = () => ({
-    validate: ({ headers, queryParams, pathParams, body, swagger_pathMethodParameter }) => {
+    validate: ({ headers, queryParams, pathParams, body, swagger_pathMethodParameter, clientErrors: { SwaggerError } }) => {
 
         const { name, lowerCaseName = name && name.toLowerCase(), in: parameterLocation, required, schema: { type, minimum, maximum, minLength, maxLength, enum: enumValue, default: defaultValue, format, nullable, pattern: regex } } = swagger_pathMethodParameter;
 
