@@ -2,7 +2,7 @@ module.exports.ServiceName = "";
 module.exports.Service = ({ swaggerV3RequestHeaderValidator, utility: { stringHelpers: { capitalize } }, clientErrors: { SwaggerError } }) =>
     async ({ swaggerDefinitions, url, baseUrl, headers, method, body }) => {
 
-        const methodLowerCase = method.toLowerCase();
+        const methodLowerCase = method.toLocaleLowerCase();
 
         const queryStringArray = url.split('?');
 
@@ -32,7 +32,7 @@ module.exports.Service = ({ swaggerV3RequestHeaderValidator, utility: { stringHe
         if (queryStringArray.length === 2) {
             queryParams = new URLSearchParams(queryStringArray[1]);
 
-            queryParams = Array.from(queryParams.entries()).reduce((acc, [key, value]) => ({ ...acc, [key.toLowerCase()]: value }), {});
+            queryParams = Array.from(queryParams.entries()).reduce((acc, [key, value]) => ({ ...acc, [key.toLocaleLowerCase()]: value }), {});
         }
 
         if (swagger_path.includes('{')) {
@@ -42,11 +42,11 @@ module.exports.Service = ({ swaggerV3RequestHeaderValidator, utility: { stringHe
                     return acc;
                 }
 
-                return { ...acc, [cur.replace(/[{}]/g, '').toLowerCase()]: splittedPathUrl[index - 1] };
+                return { ...acc, [cur.replace(/[{}]/g, '').toLocaleLowerCase()]: splittedPathUrl[index - 1] };
             }, {});
         }
 
-        const [, swagger_pathMethod] = Object.entries(swagger_pathMethods).find(([key, value]) => key.toLowerCase() === methodLowerCase) || [];
+        const [, swagger_pathMethod] = Object.entries(swagger_pathMethods).find(([key, value]) => key.toLocaleLowerCase() === methodLowerCase) || [];
 
         if (!swagger_pathMethod) {
             throw new SwaggerError({ message: `Bad request:: Swagger ${method} method not found in ${swagger_path} path in Swagger definition.` });

@@ -2,7 +2,7 @@ module.exports.ServiceName = "";
 module.exports.Service = ({ swaggerV2FieldValidators, clientErrors: { SwaggerError } }) => ({
     validate: ({ headers, queryParams, pathParams, body, swagger_pathMethodParameter }) => {
 
-        const { name, lowerCaseName = name && name.toLowerCase(), in: parameterLocation, required, type, minLength, maxLength, enum: enumValue, pattern: regex, schema } = swagger_pathMethodParameter;
+        const { name, lowerCaseName = name && name.toLocaleLowerCase(), in: parameterLocation, required, type, minLength, maxLength, enum: enumValue, pattern: regex, schema } = swagger_pathMethodParameter;
 
         if (!name || name === "") {
             throw new SwaggerError({ message: 'SWAGGER ERROR: Header name value cannot be empty, null or undefined.' });
