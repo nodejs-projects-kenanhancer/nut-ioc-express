@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 
 module.exports.ServiceName = "";
-module.exports.Service = async ({ errorMiddleware, appEnv, UnauthorizedError, appLogger, swaggerDefinitions, swaggerDocumentValidator }) => {
+module.exports.Service = async ({ errorMiddleware, textBodyParserMiddleware, appEnv, UnauthorizedError, appLogger, swaggerDefinitions, swaggerDocumentValidator }) => {
 
     const swaggers = { ...swaggerDefinitions };
 
@@ -25,6 +25,8 @@ module.exports.Service = async ({ errorMiddleware, appEnv, UnauthorizedError, ap
     app.use(express.json()); // using bodyParser to parse JSON bodies into JS objects
 
     app.use(express.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
+
+    app.use(textBodyParserMiddleware); // for parsing text/* like text/plain, text/html etc.
 
     app.use(
         cors({
