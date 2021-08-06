@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 
 module.exports.ServiceName = "";
-module.exports.Service = async ({ errorMiddleware, textBodyParserMiddleware, appEnv, UnauthorizedError, appLogger, swaggerDefinitions, swaggerDocumentValidator }) => {
+module.exports.Service = async ({ errorMiddleware, textBodyParserMiddleware, appEnv, UnauthorizedError, appLogger, swaggerDefinitions, swaggerDocumentValidator, expressRouteMiddleware }) => {
 
     const swaggers = { ...swaggerDefinitions };
 
@@ -56,7 +56,7 @@ module.exports.Service = async ({ errorMiddleware, textBodyParserMiddleware, app
     //     console.log('HTTPS server running on PORT', PORT);
     // });
     return {
-        configProvider: { app, express, PORT },
+        configProvider: { app, express, PORT, expressRouteMiddleware },
         start: async (args) => {
 
             app.use(async (error, req, res, next) => await errorMiddleware(error, req, res, next));

@@ -1,8 +1,7 @@
-const path = require('path');
 const openApiValidator = require('express-openapi-validator');
 
 module.exports.ServiceName = "";
-module.exports.Service = async ({ expressServer, swaggerDefinitions, defaultRequestBuilderMiddleware, swaggerRequestBuilderMiddleware, dependencyProvider }) => {
+module.exports.Service = async ({ expressServer, swaggerDefinitions, defaultRequestBuilderMiddleware, swaggerRequestBuilderMiddleware, expressRouteMiddleware, dependencyProvider }) => {
 
     const { app, express } = expressServer.configProvider;
 
@@ -40,23 +39,26 @@ module.exports.Service = async ({ expressServer, swaggerDefinitions, defaultRequ
 
                 const expressPath = path.replace('}', '').replace('{', ':');
 
-                router[method](expressPath, async (req, res, next) => {
+                router[method](expressPath,
+                    async (req, res, next) => {
+                        req.swaggerDefinition = swaggerDefinition;
+                        req.swaggerPathDefinition = methods[method];
 
-                    req.swaggerDefinition = swaggerDefinition;
-
-                    await actionFunc(req.args)
-                        .then(response => res.status(200).send(response))
-                        .catch(error => {
-                            next(error);
-                        });
-                });
-
+                        await expressRouteMiddleware.invoke(req, res, next);
+                    },
+                    async (req, res, next) => {
+                        await actionFunc(req.args)
+                            .then(response => {
+                                res.status(200).send(response);
+                            })
+                            .catch(error => {
+                                next(error);
+                            });
+                    });
             }
-
         }
 
         app.use(basePath, router);
-
     };
 
     for (const swaggerDefinition in swaggerDefinitions) {
