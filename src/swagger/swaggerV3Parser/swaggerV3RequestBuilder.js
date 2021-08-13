@@ -1,5 +1,5 @@
 module.exports.ServiceName = "";
-module.exports.Service = ({ swaggerV3RequestHeaderValidator, utility: { stringHelpers: { capitalize } }, clientErrors: { SwaggerError } }) =>
+module.exports.Service = ({ swaggerV3RequestHeaderValidator, swaggerV3RequestBodyValidator, utility: { stringHelpers: { capitalize } }, clientErrors: { SwaggerError } }) =>
     async ({ swaggerDefinitions, url, baseUrl, headers, method, body }) => {
 
         const methodLowerCase = method.toLocaleLowerCase();
@@ -9,7 +9,6 @@ module.exports.Service = ({ swaggerV3RequestHeaderValidator, utility: { stringHe
         const pathUrl = queryStringArray[0];
 
         const splittedPathUrl = pathUrl.split('/').slice(1);
-
 
 
         const swaggerDefinition = swaggerDefinitions && Object.values(swaggerDefinitions).find(def => def.servers[0].url === baseUrl) || {};
@@ -52,7 +51,12 @@ module.exports.Service = ({ swaggerV3RequestHeaderValidator, utility: { stringHe
             throw new SwaggerError({ message: `Bad request:: Swagger ${method} method not found in ${swagger_path} path in Swagger definition.` });
         }
 
-        const args = { body };
+        const args = { };
+
+        if (swagger_pathMethod.requestBody) {
+            const bodyValue = await swaggerV3RequestBodyValidator.validate({ body, swaggerBodyParam: swagger_pathMethod.requestBody, requestBodies, schemas });
+            args.body = bodyValue;
+        }
 
         if (swagger_pathMethod.parameters) {
             for (const swagger_pathMethodParameter of swagger_pathMethod.parameters) {

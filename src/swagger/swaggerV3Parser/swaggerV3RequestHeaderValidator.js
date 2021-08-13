@@ -34,15 +34,7 @@ module.exports.Service = ({ clientErrors: { SwaggerError } }) => ({
 
             value = pathParams[lowerCaseName];
         }
-        else if (parameterLocation === 'body') {
 
-            if (required && !body) {
-                throw new SwaggerError({ message: 'SWAGGER ERROR: body is required' });
-            }
-
-            value = body;
-        }
-
-        return value;
+        return value || defaultValue;
     }
 });
