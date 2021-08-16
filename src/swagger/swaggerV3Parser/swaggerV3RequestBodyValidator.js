@@ -1,6 +1,6 @@
 module.exports.ServiceName = "";
 module.exports.Service = () => ({
-    validate: ({ body, swaggerBodyParam, requestBodies, schemas }) => {
+    validate: ({ body, swaggerBodyParam, requestBodies }) => {
 
         if (swaggerBodyParam.hasOwnProperty('$ref')) {
 

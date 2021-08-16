@@ -54,7 +54,7 @@ module.exports.Service = ({ swaggerV3RequestHeaderValidator, swaggerV3RequestBod
         const args = { };
 
         if (swagger_pathMethod.requestBody) {
-            const bodyValue = await swaggerV3RequestBodyValidator.validate({ body, swaggerBodyParam: swagger_pathMethod.requestBody, requestBodies, schemas });
+            const bodyValue = await swaggerV3RequestBodyValidator.validate({ body, swaggerBodyParam: swagger_pathMethod.requestBody, requestBodies });
             args.body = bodyValue;
         }
 
