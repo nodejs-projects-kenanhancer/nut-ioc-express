@@ -14,15 +14,12 @@ module.exports.Service = async ({ errorMiddleware, textBodyParserMiddleware, app
 
     await swaggerDocumentValidator.validate({ swaggerDefinitions: swaggers });
 
-
-
-
     const app = express();
 
-    const { PORT = 3000, HOST = "0.0.0.0", CORS_ORIGINS } = appEnv;
+    const { PORT = 3000, HOST = "0.0.0.0", CORS_ORIGINS, REQUEST_BODY_SIZE = '100kb' } = appEnv;
     const allowedOrigins = CORS_ORIGINS && CORS_ORIGINS.split(',');
 
-    app.use(express.json()); // using bodyParser to parse JSON bodies into JS objects
+    app.use(express.json({ limit: REQUEST_BODY_SIZE })); // using bodyParser to parse JSON bodies into JS objects
 
     app.use(express.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
