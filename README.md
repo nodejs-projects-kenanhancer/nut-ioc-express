@@ -14,6 +14,7 @@ Environment Variables with default values
 - CORS_ORIGINS=*
 - REQUEST_BUILDER=swaggerV3RequestBuilder
 - OPEN_API_UI_BASE_PATH=/api-docs
+- REQUEST_BODY_SIZE=100kb
 
 ## Example
 
