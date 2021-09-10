@@ -47,7 +47,7 @@ module.exports.Service = async ({ expressServer, swaggerDefinitions, defaultRequ
                         await expressRouteMiddleware.invoke(req, res, next);
                     },
                     async (req, res, next) => {
-                        await actionFunc(req.args)
+                        await actionFunc(req.args, req, res)
                             .then(response => {
                                 res.status(200).send(response);
                             })
