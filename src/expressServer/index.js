@@ -1,5 +1,8 @@
 const express = require('express');
 const cors = require('cors');
+const fs = require('fs');
+const http = require('http');
+const https = require('https');
 
 module.exports.ServiceName = "";
 module.exports.Service = async ({ errorMiddleware, textBodyParserMiddleware, appEnv, UnauthorizedError, appLogger, swaggerDefinitions, swaggerDocumentValidator, expressRouteMiddleware }) => {
@@ -16,7 +19,7 @@ module.exports.Service = async ({ errorMiddleware, textBodyParserMiddleware, app
 
     const app = express();
 
-    const { PORT = 3000, HOST = "0.0.0.0", CORS_ORIGINS, REQUEST_BODY_SIZE = '100kb' } = appEnv;
+    const { PORT = 3000, HOST = "0.0.0.0", CORS_ORIGINS, REQUEST_BODY_SIZE = '100kb', HTTP_DISABLED = false, HTTPS_PORT = 443, HTTPS_KEY_FILE = 'key.pem', HTTPS_CERT_FILE = 'cert.pem' } = appEnv;
     const allowedOrigins = CORS_ORIGINS && CORS_ORIGINS.split(',');
 
     app.use(express.json({ limit: REQUEST_BODY_SIZE })); // using bodyParser to parse JSON bodies into JS objects
@@ -37,31 +40,29 @@ module.exports.Service = async ({ errorMiddleware, textBodyParserMiddleware, app
         })
     );
 
-    // const httpServer = http.createServer(app);
-    // httpServer.listen(process.env.HTTPPORT || 8080, function () {
-    //     const PORT = httpServer.address().PORT;
-    //     console.log('HTTP server running on PORT', PORT);
-    // });
+    const httpsOptions = {
+        key: HTTPS_KEY_FILE && fs.existsSync(HTTPS_KEY_FILE) && fs.readFileSync(HTTPS_KEY_FILE),
+        cert: HTTPS_CERT_FILE && fs.existsSync(HTTPS_CERT_FILE) && fs.readFileSync(HTTPS_CERT_FILE)
+    }
 
-    // const httpsOptions = {
-    //     key: fs.readFileSync('my-ssl-key'),
-    //     cert: fs.readFileSync('my-ssl-cert')
-    // };
-    // const httpsServer = https.createServer(httpsOptions, app);
-    // httpsServer.listen(process.env.HTTPSPORT || 8081, function () {
-    //     const PORT = httpsServer.address().PORT;
-    //     console.log('HTTPS server running on PORT', PORT);
-    // });
+    const httpsEnabled = httpsOptions.key && httpsOptions.cert;
+
     return {
         configProvider: { app, express, PORT, expressRouteMiddleware },
         start: async (args) => {
 
             app.use(async (error, req, res, next) => await errorMiddleware(error, req, res, next));
 
-            app.listen(PORT, HOST, () => appLogger.info(`App listening on PORT ${PORT}!`));
+            if (!HTTP_DISABLED || !httpsEnabled) {
+                http.createServer(app).listen({ port: PORT }, () => appLogger.info(`App listening HTTP requests on PORT ${PORT}!`));
+            }
+
+            if (httpsEnabled) {
+                https.createServer(httpsOptions, app).listen({ port: HTTPS_PORT }, () => appLogger.info(`App listening HTTPS requests on PORT ${HTTPS_PORT}!`));
+            }
 
             appLogger.info(`Swagger Document links:${appEnv.ApiDocs.reduce((acc, cur) => `${acc}\n${cur}`, "")}`);
 
         }
-    };
-};
+    }
+}
