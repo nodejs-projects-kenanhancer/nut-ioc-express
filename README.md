@@ -15,7 +15,11 @@ Environment Variables with default values
 - REQUEST_BUILDER=swaggerV3RequestBuilder
 - OPEN_API_UI_BASE_PATH=/api-docs
 - REQUEST_BODY_SIZE=100kb
-
+- HTTP_ENABLED=true
+- HTTPS_ENABLED=false
+- HTTPS_PORT=443
+- HTTPS_KEY_FILE=key.pem
+- HTTPS_CERT_FILE=cert.pem
 ## Example
 
 Auth0 usage is in the following example, notice that `expressRouteMiddleware.use` is called for every route invocation so that we can add new middleware for some paths.
