@@ -21,7 +21,7 @@ module.exports.Service = async ({ errorMiddleware, textBodyParserMiddleware, app
 
     const { PORT = 3000, HOST = "0.0.0.0", CORS_ORIGINS, REQUEST_BODY_SIZE = '100kb', HTTPS_PORT = 443, HTTPS_KEY_FILE = 'key.pem', HTTPS_CERT_FILE = 'cert.pem' } = appEnv;
 
-    const HTTP_ENABLED = process.env.HTTP_ENABLED === 'true';
+    const HTTP_ENABLED = process.env.HTTP_ENABLED == undefined || process.env.HTTP_ENABLED === 'true';
     const HTTPS_ENABLED = process.env.HTTPS_ENABLED === 'true';
 
     const allowedOrigins = CORS_ORIGINS && CORS_ORIGINS.split(',');
