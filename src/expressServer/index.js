@@ -3,6 +3,7 @@ const cors = require('cors');
 const fs = require('fs');
 const http = require('http');
 const https = require('https');
+const helmet = require('helmet');
 
 module.exports.ServiceName = "";
 module.exports.Service = async ({ errorMiddleware, textBodyParserMiddleware, appEnv, UnauthorizedError, appLogger, swaggerDefinitions, swaggerDocumentValidator, expressRouteMiddleware }) => {
@@ -19,7 +20,7 @@ module.exports.Service = async ({ errorMiddleware, textBodyParserMiddleware, app
 
     const app = express();
 
-    const { PORT = 3000, HOST = "0.0.0.0", CORS_ORIGINS, REQUEST_BODY_SIZE = '100kb', HTTPS_PORT = 443, HTTPS_KEY_FILE = 'key.pem', HTTPS_CERT_FILE = 'cert.pem' } = appEnv;
+    const { PORT = 3000, HOST = "0.0.0.0", CORS_ORIGINS, REQUEST_BODY_SIZE = '100kb', HTTPS_PORT = 443, HTTPS_KEY_FILE = 'key.pem', HTTPS_CERT_FILE = 'cert.pem', HELMET_OPTIONS_FILE = '' } = appEnv;
 
     const HTTP_ENABLED = process.env.HTTP_ENABLED == undefined || process.env.HTTP_ENABLED === 'true';
     const HTTPS_ENABLED = process.env.HTTPS_ENABLED === 'true';
@@ -43,6 +44,11 @@ module.exports.Service = async ({ errorMiddleware, textBodyParserMiddleware, app
             },
         })
     );
+
+    if (HELMET_OPTIONS_FILE && fs.existsSync(HELMET_OPTIONS_FILE)) {
+        const helmetOptions = JSON.parse(fs.readFileSync(HELMET_OPTIONS_FILE));
+        app.use(helmet(helmetOptions));
+    }
 
     const httpsOptions = {
         key: HTTPS_KEY_FILE && fs.existsSync(HTTPS_KEY_FILE) && fs.readFileSync(HTTPS_KEY_FILE),

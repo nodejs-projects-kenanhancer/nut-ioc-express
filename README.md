@@ -20,6 +20,13 @@ Environment Variables with default values
 - HTTPS_PORT=443
 - HTTPS_KEY_FILE=key.pem
 - HTTPS_CERT_FILE=cert.pem
+- HELMET_OPTIONS_FILE=
+
+## Helmet Options
+    To enable helmet, helmet options json file path must be set as HELMET_OPTIONS_FILE environment variable.
+    For Example: 
+        HELMET_OPTIONS_FILE=./src/configs/helmetOptions.json    
+
 ## Example
 
 Auth0 usage is in the following example, notice that `expressRouteMiddleware.use` is called for every route invocation so that we can add new middleware for some paths.
